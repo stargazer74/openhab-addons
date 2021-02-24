@@ -1,0 +1,95 @@
+/**
+ * Copyright (c) 2010-2021 Contributors to the openHAB project
+ *
+ * See the NOTICE file(s) distributed with this work for additional
+ * information.
+ *
+ * This program and the accompanying materials are made available under the
+ * terms of the Eclipse Public License 2.0 which is available at
+ * http://www.eclipse.org/legal/epl-2.0
+ *
+ * SPDX-License-Identifier: EPL-2.0
+ */
+package org.openhab.binding.volumio2.internal.discovery;
+
+import static org.openhab.binding.volumio2.internal.Volumio2BindingConstants.THING_TYPE_VOLUMIO2;
+
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.Set;
+
+import javax.jmdns.ServiceInfo;
+
+import org.eclipse.jdt.annotation.Nullable;
+import org.jetbrains.annotations.NotNull;
+import org.openhab.binding.volumio2.internal.Volumio2BindingConstants;
+import org.openhab.core.config.discovery.DiscoveryResult;
+import org.openhab.core.config.discovery.DiscoveryResultBuilder;
+import org.openhab.core.config.discovery.mdns.MDNSDiscoveryParticipant;
+import org.openhab.core.thing.ThingTypeUID;
+import org.openhab.core.thing.ThingUID;
+import org.osgi.service.component.annotations.Component;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+/**
+ * @author Patrick Sernetz - Initial contribution
+ * @author Chris Wohlbrecht - Adaption for openHAB 3
+ */
+@Component(configurationPid = "discovery.volumio2")
+public class Volumio2DiscoveryParticipant implements MDNSDiscoveryParticipant {
+
+    private static final Logger logger = LoggerFactory.getLogger(Volumio2DiscoveryParticipant.class);
+
+    @Override
+    public @NotNull Set<ThingTypeUID> getSupportedThingTypeUIDs() {
+        return Collections.singleton(THING_TYPE_VOLUMIO2);
+    }
+
+    @Override
+    public @NotNull String getServiceType() {
+        return Volumio2BindingConstants.DISCOVERY_SERVICE_TYPE;
+    }
+
+    @Override
+    public @Nullable DiscoveryResult createResult(ServiceInfo serviceInfo) {
+        logger.debug("''''''''''''''''''''''''''''''''''''''''''#");
+        String volumioName = serviceInfo.getPropertyString(Volumio2BindingConstants.DISCOVERY_NAME_PROPERTY);
+        HashMap<String, Object> properties = new HashMap<>();
+        ThingUID thingUID = getThingUID(serviceInfo);
+
+        logger.debug("Service Device: {}", serviceInfo);
+        logger.debug("Thing UID: {}", thingUID);
+
+        DiscoveryResult discoveryResult = null;
+        if (thingUID != null) {
+            properties.put("hostname", serviceInfo.getServer());
+            properties.put("port", serviceInfo.getPort());
+            properties.put("protocol", "http");
+
+            discoveryResult = DiscoveryResultBuilder.create(thingUID).withProperties(properties).withLabel(volumioName)
+                    .build();
+            logger.debug("DiscoveryResult: {}", discoveryResult);
+        }
+        return discoveryResult;
+    }
+
+    @Override
+    public @Nullable ThingUID getThingUID(@NotNull ServiceInfo serviceInfo) {
+        Collections.list(serviceInfo.getPropertyNames()).forEach(s -> logger.debug("PropertyName: {}", s));
+
+        String volumioName = serviceInfo.getPropertyString("volumioName");
+        if (volumioName == null) {
+            return null;
+        }
+
+        String uuid = serviceInfo.getPropertyString("UUID");
+        if (uuid == null) {
+            return null;
+        }
+
+        String uuidAndServername = String.format("%s-%s", uuid, volumioName);
+        logger.debug("return new ThingUID({}, {});", THING_TYPE_VOLUMIO2, uuidAndServername);
+        return new ThingUID(THING_TYPE_VOLUMIO2, uuidAndServername);
+    }
+}
