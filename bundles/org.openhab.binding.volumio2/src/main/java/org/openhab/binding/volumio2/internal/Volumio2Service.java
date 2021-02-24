@@ -63,14 +63,20 @@ public class Volumio2Service {
     }
 
     private void bindDefaultEvents(String hostname) {
+        socket.on(Socket.EVENT_CONNECTING, arg0 -> logger.debug("Trying to connect to Volumio on {}", hostname));
 
-        socket.on(Socket.EVENT_CONNECT_ERROR, arg -> logger.error("Could not connect to Volumio on {}", hostname));
+        socket.on(Socket.EVENT_RECONNECTING, arg0 -> logger.debug("Trying to reconnect to Volumio on {}", hostname));
 
-        socket.on(Socket.EVENT_CONNECT, arg -> {
+        socket.on(Socket.EVENT_CONNECT_ERROR, arg0 -> logger.error("Could not connect to Volumio on {}", hostname));
+
+        socket.on(Socket.EVENT_CONNECT_TIMEOUT,
+                arg0 -> logger.error("Timedout while conntecting to Volumio on {}", hostname));
+
+        socket.on(Socket.EVENT_CONNECT, arg0 -> {
             logger.info("Connected to Volumio2 on {}", hostname);
             setConnected(true);
 
-        }).on(Socket.EVENT_DISCONNECT, arg -> {
+        }).on(Socket.EVENT_DISCONNECT, arg0 -> {
             logger.warn("Disconnected from Volumio2 on {}", hostname);
             setConnected(false);
         });
