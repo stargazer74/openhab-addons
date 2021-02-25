@@ -16,8 +16,14 @@
 
   <dependencies>
     <dependency>
-      <groupId>io.socket</groupId>
-      <artifactId>socket.io-client</artifactId>
+      <groupId>org.openhab.osgiify</groupId>
+      <artifactId>io.socket.socket.io-client</artifactId>
+      <version>1.0.0</version>
+      <scope>compile</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.openhab.osgiify</groupId>
+      <artifactId>io.socket.engine.io-client</artifactId>
       <version>1.0.0</version>
       <scope>compile</scope>
     </dependency>
