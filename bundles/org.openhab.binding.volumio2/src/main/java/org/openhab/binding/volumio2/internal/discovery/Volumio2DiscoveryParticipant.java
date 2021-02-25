@@ -53,7 +53,6 @@ public class Volumio2DiscoveryParticipant implements MDNSDiscoveryParticipant {
 
     @Override
     public @Nullable DiscoveryResult createResult(ServiceInfo serviceInfo) {
-        logger.debug("''''''''''''''''''''''''''''''''''''''''''#");
         String volumioName = serviceInfo.getPropertyString(Volumio2BindingConstants.DISCOVERY_NAME_PROPERTY);
         HashMap<String, Object> properties = new HashMap<>();
         ThingUID thingUID = getThingUID(serviceInfo);
