@@ -19,9 +19,9 @@ import java.util.HashMap;
 import java.util.Set;
 
 import javax.jmdns.ServiceInfo;
+import javax.validation.constraints.NotNull;
 
 import org.eclipse.jdt.annotation.Nullable;
-import org.jetbrains.annotations.NotNull;
 import org.openhab.binding.volumio2.internal.Volumio2BindingConstants;
 import org.openhab.core.config.discovery.DiscoveryResult;
 import org.openhab.core.config.discovery.DiscoveryResultBuilder;
