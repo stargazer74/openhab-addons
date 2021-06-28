@@ -174,7 +174,7 @@ This binding currently supports following channel types:
 | rainrate        | Number        | Rain fall rate in millimeters per hour.                                            |
 | raintotal       | Number        | Total rain in millimeters.                                                         |
 | rawmessage      | String        | Hexadecimal representation of the raw RFXCOM msg incl. header and payload          |
-| rawpayload      | String        | Hexadecimal representation of payload RFXCOM messages                              |
+| rawpayload      | String        | Hexadecimal representation of the payload of RFXCOM messages                       |
 | setpoint        | Number        | Requested temperature.                                                             |
 | shutter         | Rollershutter | Shutter/blind channel.                                                             |
 | status          | String        | Status channel.                                                                    |
@@ -229,6 +229,7 @@ This binding currently supports the following things / message types:
 *   [lighting5 - RFXCOM Lighting5 Actuator](#lighting5---rfxcom-lighting5-actuator)
 *   [lighting6 - RFXCOM Lighting6 Actuator](#lighting6---rfxcom-lighting6-actuator)
 *   [rain - RFXCOM Rain Sensor](#rain---rfxcom-rain-sensor)
+*   [raw - RFXCOM Raw Messages](#raw---rfxcom-raw-messages)
 *   [rfxsensor - RFXCOM rfxsensor](#rfxsensor)
 *   [rfy - RFXCOM Rfy Actuator](#rfy---rfxcom-rfy-actuator)
 *   [security1 - RFXCOM Security1 Sensor](#security1---rfxcom-security1-sensor)
@@ -264,7 +265,7 @@ A BBQ Temperature device
 
 ### blinds1 - RFXCOM Blinds1 Actuator
 
-A Blinds1 device
+A Blinds1 device. Not all blinds support all commands.
 
 #### Channels
 
@@ -290,11 +291,22 @@ A Blinds1 device
         *   T2 - A-OK RF01
         *   T3 - A-OK AC114/AC123
         *   T4 - Raex YR1326
-        *   T5 - Media Mount
-        *   T6 - DC106/Rohrmotor24-RMF/Yooda
+        *   T5 - Media Mount (warning - directions reversed)
+        *   T6 - DC106/Rohrmotor24-RMF/Yooda/Dooya/ESMO/Brel/Quitidom
         *   T7 - Forest
         *   T8 - Chamberlain CS4330CN
+        *   T9 - Sunpery/BTX
+        *   T10 - Dolat DLM-1, Topstar
         *   T11 - ASP
+        *   T12 - Confexx CNF24-2435
+        *   T13 - Screenline
+        *   T14 - Hualite
+        *   T15 - Motostar
+        *   T16 - Zemismart
+        *   T17 - Gaposa
+        *   T18 - Cherubini
+        *   T19 - Louvolite One Touch Vogue motor
+        *   T20 - OZRoll
 
 ### chime - RFXCOM Chime
 
@@ -427,7 +439,7 @@ A DateTime device
 
 A group of fan devices
 
-#### Standard Fan
+#### fan - Standard Fan
 
 A Fan device
 
@@ -462,7 +474,7 @@ Switch item=FanLightSwitch label="Light" mappings=[ON="On"]
 Switch item=FanSpeedSwitch label="Speed" mappings=[LOW=Low, MED=Medium, HI=High]
 ```
 
-#### Falmec fan
+#### fan_falmec - Falmec fan
 
 A Falmec Fan device
 
@@ -484,7 +496,7 @@ A Falmec Fan device
     *   Specifies device sub type.
         *   FALMEC - Falmec
 
-#### Lucci Air DC fan
+#### fan_lucci_dc - Lucci Air DC fan
 
 A Lucci Air DC fan device
 
@@ -505,7 +517,7 @@ A Lucci Air DC fan device
     *   Specifies device sub type.
         *   LUCCI_AIR_DC - Lucci Air DC
 
-#### Lucci Air DC II fan
+#### fan_lucci_dc_ii - Lucci Air DC II fan
 
 A Lucci Air DC II fan device
 
@@ -526,6 +538,28 @@ A Lucci Air DC II fan device
 *   subType - Sub Type
     *   Specifies device sub type.
         *   LUCCI_AIR_DC_II - Lucci Air DC II
+        
+#### fan_novy - Novy extractor fan
+
+A Novy extractor fan.
+
+##### Channels
+
+| Name         | Channel Type                        | Item Type     | Remarks                  |
+|--------------|-------------------------------------|---------------|--------------------------|
+| command      | [command](#channels)                | Switch        |                          |
+| commandString| [commandString](#channels)          | String        | Options: POWER, UP, DOWN, LIGHT, LEARN, RESET_FILTER |
+| fanSpeed     | [fanspeedcontrol](#channels)        | RollerShutter | Options: UP / DOWN       |
+| fanLight     | [fanlight](#channels)               | Switch        |                          |
+| signalLevel  | [system.signal-strength](#channels) | Number        |                          |
+
+##### Configuration Options
+
+*   deviceId - Device Id
+    *   Device id, example 47360
+*   subType - Sub Type
+    *   Specifies device sub type.
+        *   NOVY - Novy extractor fan
 
 ### energy - RFXCOM Energy Sensor
 
@@ -882,6 +916,32 @@ A Rain device
         *   RAIN4 - UPM RG700
         *   RAIN5 - WS2300
         *   RAIN6 - La Crosse TX5
+        *   RAIN9 - TFA 30.3233.1
+
+### raw - RFXCOM Raw Messages
+
+Raw messages.
+
+#### Channels
+
+| Name       | Channel Type              | Item Type | Remarks     |
+|------------|---------------------------|-----------|-------------|
+| rawMessage | [rawmessage](#channels)   | String    |             |
+| rawPayload | [rawpayload](#channels)   | String    |             |
+
+#### Configuration Options
+
+*   deviceId - Device Id
+    *   Raw items cannot provide a device ID, so this value is always RAW.
+
+*   subType - Sub Type
+    *   Specifies message sub type.
+
+        *   RAW_PACKET1
+        *   RAW_PACKET2
+        *   RAW_PACKET3
+        *   RAW_PACKET4
+
 
 ### rfxsensor - RFXCOM RFXSensor 
 
@@ -1210,7 +1270,10 @@ Any messages that RFXCOM can receive but not decode.
         *   RTS - RTS
         *   SELECT\_PLUS - Select Plus
         *   HOME\_CONFORT - Home Confort
-
+        *   EDISIO - Edisio
+        *   HONEYWELL - Honeywell
+        *   FUNKBUS - Gira Funk-Bussystem
+        *   BYRONSX - Byron SX
 
 ### uv - RFXCOM UV/Temperature Sensor
 

@@ -14,7 +14,6 @@ package org.openhab.binding.omnilink.internal.handler;
 
 import static org.openhab.binding.omnilink.internal.OmnilinkBindingConstants.*;
 
-import java.util.Map;
 import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.TimeUnit;
 
@@ -22,6 +21,7 @@ import org.eclipse.jdt.annotation.NonNullByDefault;
 import org.eclipse.jdt.annotation.Nullable;
 import org.openhab.binding.omnilink.internal.discovery.ObjectPropertyRequest;
 import org.openhab.binding.omnilink.internal.discovery.ObjectPropertyRequests;
+import org.openhab.binding.omnilink.internal.exceptions.BridgeOfflineException;
 import org.openhab.core.library.types.OnOffType;
 import org.openhab.core.library.types.StringType;
 import org.openhab.core.thing.ChannelUID;
@@ -83,9 +83,7 @@ public class AudioSourceHandler extends AbstractOmnilinkHandler {
                 .builder(bridgeHandler, ObjectPropertyRequests.AUDIO_SOURCE, thingID, 0).selectNamed().build();
 
         for (AudioSourceProperties audioSourceProperties : objectPropertyRequest) {
-            Map<String, String> properties = editProperties();
-            properties.put(THING_PROPERTIES_NAME, audioSourceProperties.getName());
-            updateProperties(properties);
+            updateProperty(THING_PROPERTIES_NAME, audioSourceProperties.getName());
         }
     }
 
